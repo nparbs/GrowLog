@@ -33,6 +33,7 @@ Requires JDK 17 and the Android SDK (API 36). Set `sdk.dir` in `local.properties
 ```
 
 Every push to `main` runs the same steps in GitHub Actions and uploads the APK as an artifact.
+That APK is signed with a throwaway key, so it can't update a copy from the releases page.
 
 If your home folder path contains a space, Robolectric can't find its jars. Point the tests at a
 path without one, such as the Windows short name:
@@ -55,5 +56,5 @@ Measurements are stored in metric units, so a display-unit setting won't need a 
 The schema is exported to `app/schemas`. Any schema change needs a Room migration, because the
 database is never rebuilt destructively.
 
-`app/debug.keystore` is committed on purpose: it signs sideloaded builds so that local and CI
-builds can update each other. Replace it before any Play Store release.
+Release builds are signed with `app/debug.keystore` when that file exists, and with Gradle's
+default debug key otherwise. Keystores are ignored by git. Use a new key for any Play Store release.

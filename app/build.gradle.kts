@@ -20,13 +20,16 @@ android {
     }
 
     signingConfigs {
-        // Sideload-only key, committed so that every local and CI build can update
-        // an installed copy without wiping its data. Replace it before any store release.
-        getByName("debug") {
-            storeFile = file("debug.keystore")
-            storePassword = "android"
-            keyAlias = "androiddebugkey"
-            keyPassword = "android"
+        // Sideload-only key, kept out of git. Builds signed with it can update an installed copy
+        // without wiping its data. Without the file, Gradle signs with its default debug key.
+        val sideloadKey = file("debug.keystore")
+        if (sideloadKey.exists()) {
+            getByName("debug") {
+                storeFile = sideloadKey
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
+            }
         }
     }
 
